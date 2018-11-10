@@ -9,7 +9,29 @@ def speak_Chinese(number):
 
     Returns: a string that is the number in Chinese
     '''
-    pass
+    string_num = str(number)
+    
+    if number <= 10:
+        return trans[str(number)]
+    elif number <= 19:
+        return trans[str(10)] + ' ' + trans[str(number - 10)]
+    elif number <= 99:
+        if number%10 == 0:
+            return trans[str(number//10)] + ' ' + trans[str(10)]
+        else:
+            return trans[str(number//10)] + ' ' + trans[str(10)] + ' ' + trans[str(number%10)]
+    elif number == 100:
+        return trans[str(100)]
+    elif number <= 999 and string_num[1] == '0':
+        if number%10%10 == 0:
+            return trans[str(number//100)] + ' ' + trans[str(100)]
+        else:
+            return trans[str(number//100)] + ' ' + trans[str(100)] + ' ' + trans[str(0)] + ' ' + trans[str(number%100)]
+    elif number <= 999 and string_num[1] != 0:
+        if number%10%10 == 0:
+            return trans[str(number//100)] + ' ' + trans[str(100)] + ' ' + trans[str(number%100//10)] + ' ' + trans[str(10)] 
+        else:
+            return trans[str(number//100)] + ' ' + trans[str(100)] + ' ' + trans[str(number%100//10)] + ' ' + trans[str(10)] + ' ' + trans[str(number%10%10)]
 
 
 # For testing

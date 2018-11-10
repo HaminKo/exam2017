@@ -74,7 +74,25 @@ class Text(object):
         Example: an_instance_of_Text.create_moved_dict(2) would generate
         {'a': 'c', 'b': 'd', 'c':'e', ...}  
         '''
-        pass  # delete this line and replace with your code here
+        dictionary = {}
+
+        lowercase = range(ord('a'), ord('z') + 1)
+
+        for letter in lowercase:
+            if letter + move > 122:
+                dictionary[chr(letter)] = chr(letter + move - 26)
+            else:
+                dictionary[chr(letter)] = chr(letter + move)
+
+        uppercase = range(ord('A'), ord('Z') + 1)
+
+        for letter in uppercase:
+            if letter + move > 90:
+                dictionary[chr(letter)] = chr(letter + move - 26)
+            else:
+                dictionary[chr(letter)] = chr(letter + move)
+        
+        return dictionary
 
 
     ### YOU NEED TO MODIFY THIS METHOD ###
@@ -87,8 +105,17 @@ class Text(object):
         Returns: the text (string) in which every character is moved
              down the alphabet by the input move
         '''
-        pass  # delete this line and replace with your code here
+        
+        dictionary = self.create_moved_dict(move)
+        copy_text = self.text
+        i = 0
 
+        for letter in copy_text:
+            if letter in dictionary:
+                copy_text = copy_text[:i] + dictionary[copy_text[i]] +  copy_text[i+1:]
+            i += 1
+        
+        return copy_text
 
 class PlainText(Text):
 
@@ -110,7 +137,10 @@ class PlainText(Text):
         Note: you must use the parent class constructor(__init__ function) 
         so less code is repeated
         '''
-        pass  # delete this line and replace with your code here
+        # Initialize Text attitrubte
+        Text.__init__(self, text)
+        self.move = move
+        self.valid_words = load_wordlist(WORDLIST_FILENAME)
 
 
     ### YOU NEED TO MODIFY THIS METHOD ###
@@ -120,7 +150,7 @@ class PlainText(Text):
 
         Returns: self.move
         '''
-        pass  # delete this line and replace with your code here
+        return self.move
 
 
     ### YOU NEED TO MODIFY THIS METHOD ###
@@ -130,7 +160,7 @@ class PlainText(Text):
 
         Returns: a COPY of self.encrypting_dict
         '''
-        pass  # delete this line and replace with your code here
+        return dict(self.create_moved_dict(self.move))
 
 
     ### YOU NEED TO MODIFY THIS METHOD ###
@@ -140,8 +170,7 @@ class PlainText(Text):
 
         Returns: self.encrypted_text
         '''
-        pass  # delete this line and replace with your code here
-
+        return self.apply_move(self.move)
 
     ### YOU NEED TO MODIFY THIS METHOD ###
     def change_move(self, move):
@@ -154,7 +183,7 @@ class PlainText(Text):
 
         Returns: nothing
         '''
-        pass  # delete this line and replace with your code here
+        self.move = move
 
 
 class CipherText(Text):
@@ -171,7 +200,10 @@ class CipherText(Text):
             self.text (string, determined by input text)
             self.valid_words (list, determined using helper function load_wordlist)
         '''
-        pass  # delete this line and replace with your code here
+        Text.__init__(self, text)
+        self.text = text
+        self.valid_words = load_wordlist(WORDLIST_FILENAME)
+        
 
 
     ### YOU NEED TO MODIFY THIS METHOD ###
@@ -189,7 +221,21 @@ class CipherText(Text):
         test case in main function below.
 
         '''
-        pass  # delete this line and replace with your code here
+        decrypts = {}
+
+        for i in range(0,27):
+            copy_text = self.text
+            copy_text = self.apply_move(i)
+            real_words = 0
+            for word in copy_text.split():
+                if is_a_valid_word(self.valid_words, word):
+                    real_words += 1
+            decrypts[i] = real_words
+        
+        best = max(decrypts, key=decrypts.get)
+        return (best ,self.apply_move(int(best)))
+
+
 
 
 
@@ -212,6 +258,13 @@ def main():
     print('Actual Output:', ciphertext.decrypt_text())
 
     print(decrypt_joke())
+
+    print('TEST!!')
+
+# abc = Text('bed')
+# print(abc.text)
+# print(abc.create_moved_dict(2))
+# print(abc.apply_move(2))
 
 if __name__ == '__main__':
     main()
